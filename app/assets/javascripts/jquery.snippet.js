@@ -443,7 +443,8 @@ var ZeroClipboard = {
 				return this;
 			};
 			thingy.hasClass = function(name) {
-				return !!this.className.match( new RegExp("\\s*" + name + "\\s*") );
+				// Hardcoded regex to prevent ReDoS
+				return !!this.className.match(/(?:^|\s)" + name + "(?:$|\s)/);
 			};
 		}
 		return thingy;
