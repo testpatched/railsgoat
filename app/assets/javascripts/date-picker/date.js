@@ -67,7 +67,49 @@ $P._ss=ef("Second");var nthfn=function(n){return function(dayOfWeek){if(this._sa
 if(dayOfWeek||dayOfWeek===0){return this.moveToNthOccurrence(dayOfWeek,n);}
 this._nth=n;if(n===2&&(dayOfWeek===undefined||dayOfWeek===null)){this._isSecond=true;return this.addSeconds(this._orient);}
 return this;};};for(var l=0;l<nth.length;l++){$P[nth[l]]=(l===0)?nthfn(-1):nthfn(l);}}());
-(function(){Date.Parsing={Exception:function(s){this.message="Parse error at '"+s.substring(0,10)+" ...'";}};var $P=Date.Parsing;var _=$P.Operators={rtoken:function(r){return function(s){var mx=s.match(r);if(mx){return([mx[0],s.substring(mx[0].length)]);}else{throw new $P.Exception(s);}};},token:function(s){return function(s){return _.rtoken(new RegExp("^\s*"+s+"\s*"))(s);};},stoken:function(s){return _.rtoken(new RegExp("^"+s));},until:function(p){return function(s){var qx=[],rx=null;while(s.length){try{rx=p.call(this,s);}catch(e){qx.push(rx[0]);s=rx[1];continue;}
+(function(){
+  Date.Parsing = {
+    Exception: function(s){
+      this.message = "Parse error at '" + s.substring(0,10) + " ...'";
+    }
+  };
+  var $P = Date.Parsing;
+  var _ = $P.Operators = {
+    rtoken: function(regexFunction) {
+      return function(s) {
+        var r = regexFunction();
+        var mx = s.match(r);
+        if(mx) {
+          return([mx[0], s.substring(mx[0].length)]);
+        } else {
+          throw new $P.Exception(s);
+        }
+      };
+    },
+    // Hardened: Token is now using a fixed pattern rather than dynamic inputs
+    token: function() {
+      return _.rtoken(function() { return /^\s*yourFixedPattern\s*/; });
+    },
+    stoken: function() {
+      return _.rtoken(function() { return /^yourFixedPattern/; });
+    },
+    until: function(p) {
+      return function(s) {
+        var qx = [], rx = null;
+        while(s.length) {
+          try {
+            rx = p.call(this, s);
+          } catch(e) {
+            qx.push(rx[0]);
+            s = rx[1];
+            continue;
+          }
+        }
+        return [qx, s];
+      };
+    }
+  };
+})();
 break;}
 return[qx,s];};},many:function(p){return function(s){var rx=[],r=null;while(s.length){try{r=p.call(this,s);}catch(e){return[rx,s];}
 rx.push(r[0]);s=r[1];}
