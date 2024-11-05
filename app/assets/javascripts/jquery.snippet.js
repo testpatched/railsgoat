@@ -399,10 +399,10 @@ function snippetPopup(content) {
 	   +',scrollbars=1'
 	   +',resizable=1');
 	 top.consoleRef.document.writeln(
-	  '<html><head><title>Snippet :: Code View :: '+location.href+'</title></head>'
+	  DOMPurify.sanitize('<html><head><title>Snippet :: Code View :: '+location.href+'</title></head>'
 	   +'<body bgcolor=white onLoad="self.focus()">'
 	   +'<pre>'+content+'</pre>'
-	   +'</body></html>'
+	   +'</body></html>')
 	 );
 	 top.consoleRef.document.close();
 }
